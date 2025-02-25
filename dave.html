@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dave - Jellytoes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-dark: #0a0a0a;
+            --color-light: #f8f8f8;
+            --color-accent: #e63946;
+            --color-blue: #4cc9f0;
+            --color-pink: #f72585;
+            --color-orange: #ff9e00;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('./Assets/dave-bio.jpeg') no-repeat center center;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        .color-splash {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, var(--color-dark) 100%);
+            mix-blend-mode: multiply;
+            z-index: 2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.4) 0%, rgba(10, 10, 10, 0.6) 100%);
+            z-index: 3;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+            display: none; /* Hide particles container */
+        }
+
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            display: none; /* Hide all particles */
+        }
+
+        .particle:nth-child(1),
+        .particle:nth-child(2),
+        .particle:nth-child(3),
+        .particle:nth-child(4),
+        .particle:nth-child(5) {
+            display: none; /* Hide specific particles */
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.5s;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, var(--color-light) 0%, var(--color-blue) 50%, var(--color-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.8s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.5s, bounce 2s infinite 2.5s;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--color-light);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        /* Bio Section */
+        .bio-section {
+            padding: 6rem 10%;
+            background: var(--color-dark);
+            position: relative;
+        }
+
+        .bio-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--color-dark));
+            z-index: 4;
+        }
+
+        .rhythm-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                var(--color-blue) 20%, 
+                var(--color-pink) 50%, 
+                var(--color-orange) 80%, 
+                transparent 100%);
+            opacity: 0.3;
+        }
+
+        .bio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+            position: relative;
+        }
+
+        .bio-text {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .bio-text.visible {
+            animation: fadeUp 1s forwards;
+        }
+
+        .bio-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .bio-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--color-accent);
+        }
+
+        .bio-paragraph {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .bio-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            margin: 2rem 0;
+            padding-left: 2rem;
+            border-left: 3px solid var(--color-accent);
+            opacity: 0.9;
+        }
+
+        .drum-kit {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .drum-piece {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drum-piece::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--color-blue), var(--color-pink));
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .drum-piece:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .drum-piece:hover::before {
+            transform: translateX(0);
+        }
+
+        .drum-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--color-light);
+        }
+
+        .drum-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .drum-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Performance Stats */
+        .performance-stats {
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--color-blue), var(--color-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.3s;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            color: var(--color-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+
+        .back-link svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 2rem 10%;
+            background: rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                var(--color-blue) 20%, 
+                var(--color-pink) 50%, 
+                var(--color-orange) 80%, 
+                transparent 100%);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: var(--color-light);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            color: var(--color-accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .bio-container {
+                grid-template-columns: 1fr;
+            }
+
+            .performance-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 0 5%;
+            }
+
+            .bio-section {
+                padding: 4rem 5%;
+            }
+
+            .nav-container {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .performance-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for elements that come into view */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Navigation -->
+        <div class="nav-container">
+            <a href="index.html" class="back-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                </svg>
+                Back to Band
+            </a>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-image"></div>
+            <div class="color-splash"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Dave</h1>
+                <p class="hero-subtitle">Drummer & Rhythmic Force, creating explosive beats that drive the band's sonic journey.</p>
+            </div>
+            <div class="scroll-indicator">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- Bio Section -->
+        <section class="bio-section">
+            <div class="rhythm-line"></div>
+            <div class="bio-container">
+                <div class="bio-text fade-in-element">
+                    <h2 class="bio-title">The Rhythmic Backbone</h2>
+                    <p class="bio-paragraph">Dave is the rhythmic backbone of Jellytoes, blending a jam-centered feel with a heavy rock influence. His drumming style rides the edge of chaos while maintaining a hypnotic groove that forms the foundation of the band's sound.</p>
+                    
+                    <p class="bio-paragraph">His approach to percussion is reminiscent of Carter Beauford from Dave Matthews Band, combining technical prowess with an intuitive feel for the music. Dave doesn't just play drums; he commands them, creating an experience that drives Jellytoes forward with energy and soul.</p>
+                    
+                    <div class="bio-quote">
+                        "Rhythm isn't just about keeping time—it's about creating a conversation between the instruments. Every hit should tell a story."
+                    </div>
+                    
+                    <p class="bio-paragraph">His talent is undeniable—so much so that during a college town gig at a wine bar, his drum solo was so electrifying that the young women hosting a formal event abandoned their own party and charged the stage, surrounding him in a percussive frenzy.</p>
+                    
+                    <p class="bio-paragraph">When not on stage with Jellytoes, Dave can be found in his practice space, developing new rhythmic patterns and exploring the boundaries of percussion. His dedication to his craft is evident in every performance, where his explosive energy and precise timing create an unforgettable experience.</p>
+                </div>
+                
+                <div class="fade-in-element">
+                    <div class="drum-kit">
+                        <div class="drum-piece">
+                            <div class="drum-icon">🥁</div>
+                            <div class="drum-name">Snare</div>
+                            <div class="drum-desc">Custom 14" brass snare with exceptional crack and sensitivity</div>
+                        </div>
+                        <div class="drum-piece">
+                            <div class="drum-icon">🔊</div>
+                            <div class="drum-name">Bass Drum</div>
+                            <div class="drum-desc">22" maple kick with deep resonance and powerful attack</div>
+                        </div>
+                        <div class="drum-piece">
+                            <div class="drum-icon">🎵</div>
+                            <div class="drum-name">Hi-Hat</div>
+                            <div class="drum-desc">14" Zildjian K Custom with crisp articulation</div>
+                        </div>
+                        <div class="drum-piece">
+                            <div class="drum-icon">✨</div>
+                            <div class="drum-name">Ride</div>
+                            <div class="drum-desc">22" Sabian HHX with complex overtones</div>
+                        </div>
+                        <div class="drum-piece">
+                            <div class="drum-icon">💫</div>
+                            <div class="drum-name">Toms</div>
+                            <div class="drum-desc">10", 12", and 16" maple toms with warm tone</div>
+                        </div>
+                        <div class="drum-piece">
+                            <div class="drum-icon">⚡</div>
+                            <div class="drum-name">Crashes</div>
+                            <div class="drum-desc">18" and 19" thin crashes for explosive accents</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-stats fade-in-element">
+                        <div class="stat-card">
+                            <div class="stat-number">200+</div>
+                            <div class="stat-label">Live Performances</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Years with Jellytoes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Signature Grooves</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.27C8.28,9.09 5.11,7.38 3,4.79C2.63,5.42 2.42,6.16 2.42,6.94C2.42,8.43 3.17,9.75 4.33,10.5C3.62,10.5 2.96,10.3 2.38,10C2.38,10 2.38,10 2.38,10.03C2.38,12.11 3.86,13.85 5.82,14.24C5.46,14.34 5.08,14.39 4.69,14.39C4.42,14.39 4.15,14.36 3.89,14.31C4.43,16 6,17.26 7.89,17.29C6.43,18.45 4.58,19.13 2.56,19.13C2.22,19.13 1.88,19.11 1.54,19.07C3.44,20.29 5.7,21 8.12,21C16,21 20.33,14.46 20.33,8.79C20.33,8.6 20.33,8.42 20.32,8.23C21.16,7.63 21.88,6.87 22.46,6Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.59,6.69C19.3,5.93 18.67,5.31 17.91,5C16.46,4.5 12,4.5 12,4.5C12,4.5 7.54,4.5 6.09,5C5.33,5.31 4.7,5.93 4.41,6.69C4,8.12 4,11.28 4,11.28C4,11.28 4,14.44 4.41,15.87C4.7,16.63 5.33,17.25 6.09,17.56C7.54,18.06 12,18.06 12,18.06C12,18.06 16.46,18.06 17.91,17.56C18.67,17.25 19.3,16.63 19.59,15.87C20,14.44 20,11.28 20,11.28C20,11.28 20,8.12 19.59,6.69M10.5,14.25V8.31L14.94,11.28L10.5,14.25Z" />
+                    </svg>
+                </a>
+            </div>
+            <p>&copy; 2023 Jellytoes. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in-element');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Smooth scroll for the scroll indicator
+            document.querySelector('.scroll-indicator').addEventListener('click', function() {
+                document.querySelector('.bio-section').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

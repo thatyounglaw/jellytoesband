@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jellytoes - Official Band Site</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="./Assets/favicon.ico" type="image/x-icon">
+    <meta name="description" content="Official website of Jellytoes">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="hero-container">
+        <!-- Optional overlay for better text contrast -->
+        <div class="hero-overlay"></div>
+
+        <!-- Interactive hotspots for band members -->
+        <a href="matt.html" class="hotspot hotspot-left" data-member="Matt" data-x="0.39" data-y="0.53">
+            <div class="hotspot-content">
+                <h3>Matt</h3>
+                <p>Bass</p>
+            </div>
+        </a>
+        <a href="dave.html" class="hotspot hotspot-center" data-member="Dave" data-x="0.51" data-y="0.59">
+            <div class="hotspot-content">
+                <h3>Dave</h3>
+                <p>Drums</p>
+            </div>
+        </a>
+        <a href="alex.html" class="hotspot hotspot-right" data-member="Alex" data-x="0.64" data-y="0.55">
+            <div class="hotspot-content">
+                <h3>Alex</h3>
+                <p>Guitar & Lead Vocals</p>
+            </div>
+        </a>
+        <div class="hotspot hotspot-audience" data-member="Fan" data-x="0.24" data-y="0.65">
+            <div class="hotspot-content">
+                <h3>You</h3>
+                <p>Become a Fan</p>
+            </div>
+        </div>
+
+        <!-- Band Logo/Name -->
+        <div class="band-logo">
+            <h1>Jellytoes</h1>
+            <p>Indie Rock | Fusion | Jam</p>
+        </div>
+    </div>
+
+    <!-- Fan Signup Modal -->
+    <div class="fan-modal-overlay" id="fanModalOverlay">
+        <div class="fan-modal">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <h2>Join the Jellytoes Family</h2>
+            <p>Sign up for exclusive updates, show dates, and behind-the-scenes content!</p>
+            <form id="fanSignupForm" action="#" method="post">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <button type="submit">Join the Family</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Debug Panel (hidden by default) -->
+    <div class="debug-panel" id="debugPanel">
+        <div id="debugInfo"></div>
+        <button id="toggleDebug">Toggle Debug Mode</button>
+        <button id="savePositions">Save Positions</button>
+    </div>
+
+    <script>
+        // Modal functionality
+        const audienceHotspot = document.querySelector('.hotspot-audience');
+        const fanModalOverlay = document.getElementById('fanModalOverlay');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        audienceHotspot.addEventListener('click', () => {
+            fanModalOverlay.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            fanModalOverlay.classList.remove('active');
+        });
+
+        fanModalOverlay.addEventListener('click', (e) => {
+            if (e.target === fanModalOverlay) {
+                fanModalOverlay.classList.remove('active');
+            }
+        });
+
+        // Form submission (placeholder)
+        document.getElementById('fanSignupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Thanks for signing up! We\'ll be in touch soon.');
+            fanModalOverlay.classList.remove('active');
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+            
+            // Reset initialization flag on page load
+            window.hotspotsInitialized = false;
+            
+            // Ensure the background image is fully loaded before positioning hotspots
+            const img = new Image();
+            img.onload = function() {
+                console.log("Background image loaded successfully");
+                // Position hotspots after a short delay to ensure everything is rendered
+                setTimeout(() => {
+                    positionHotspots();
+                    // Force a second positioning after a longer delay to handle any rendering issues
+                    setTimeout(positionHotspots, 500);
+                }, 100);
+            };
+            img.onerror = function() {
+                console.error("Error loading background image");
+                positionHotspots();
+            };
+            img.src = './Assets/JT-Hero-Image.jpeg';
+            
+            // Initial positioning
+            positionHotspots();
+        });
+        
+        // Get the original image dimensions (you'll need to replace these with your actual image dimensions)
+        const ORIGINAL_IMAGE_WIDTH = 2048;  // Replace with your image's actual width
+        const ORIGINAL_IMAGE_HEIGHT = 1152; // Replace with your image's actual height
+        
+        // Position hotspots based on the background image
+        function positionHotspots() {
+            const container = document.querySelector('.hero-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Calculate the actual dimensions of the background image as displayed
+            let bgWidth, bgHeight, offsetX, offsetY;
+            
+            // Get the aspect ratio of the original image
+            const imageAspectRatio = ORIGINAL_IMAGE_WIDTH / ORIGINAL_IMAGE_HEIGHT;
+            const containerAspectRatio = containerRect.width / containerRect.height;
+            
+            // Determine how the image is displayed with background-size: cover
+            if (containerAspectRatio > imageAspectRatio) {
+                // Container is wider than image - image width is scaled to container width
+                bgWidth = containerRect.width;
+                bgHeight = bgWidth / imageAspectRatio;
+                offsetX = 0;
+                offsetY = (containerRect.height - bgHeight) / 2;
+            } else {
+                // Container is taller than image - image height is scaled to container height
+                bgHeight = containerRect.height;
+                bgWidth = bgHeight * imageAspectRatio;
+                offsetX = (containerRect.width - bgWidth) / 2;
+                offsetY = 0;
+            }
+            
+            // Log dimensions for debugging
+            if (!window.hotspotsInitialized) {
+                console.log(`Image dimensions: ${ORIGINAL_IMAGE_WIDTH}x${ORIGINAL_IMAGE_HEIGHT}`);
+                console.log(`Container: ${containerRect.width}x${containerRect.height}`);
+                console.log(`Background image as displayed: ${bgWidth}x${bgHeight}`);
+                console.log(`Offset: X=${offsetX}, Y=${offsetY}`);
+                window.hotspotsInitialized = true;
+            }
+            
+            // Position each hotspot
+            const hotspots = document.querySelectorAll('.hotspot');
+            hotspots.forEach(hotspot => {
+                // Get the relative position from data attributes
+                const relX = parseFloat(hotspot.getAttribute('data-x'));
+                const relY = parseFloat(hotspot.getAttribute('data-y'));
+                
+                // Calculate absolute position within the container
+                const hotspotWidth = hotspot.offsetWidth;
+                const hotspotHeight = hotspot.offsetHeight;
+                
+                // Position the hotspot centered on its target point
+                let left = offsetX + (relX * bgWidth) - (hotspotWidth / 2);
+                let top = offsetY + (relY * bgHeight) - (hotspotHeight / 2);
+                
+                // Ensure hotspots stay within visible area
+                left = Math.max(0, Math.min(containerRect.width - hotspotWidth, left));
+                top = Math.max(0, Math.min(containerRect.height - hotspotHeight, top));
+                
+                // Apply the position
+                hotspot.style.left = `${left}px`;
+                hotspot.style.top = `${top}px`;
+            });
+            
+            // Update debug info if debug mode is active
+            updateDebugInfo();
+        }
+        
+        // Debug functionality
+        let debugMode = false;
+        const debugPanel = document.getElementById('debugPanel');
+        const debugInfo = document.getElementById('debugInfo');
+        const toggleDebugBtn = document.getElementById('toggleDebug');
+        const savePositionsBtn = document.getElementById('savePositions');
+        
+        // Toggle debug mode
+        toggleDebugBtn.addEventListener('click', () => {
+            debugMode = !debugMode;
+            debugPanel.classList.toggle('active');
+            
+            const hotspots = document.querySelectorAll('.hotspot');
+            hotspots.forEach(hotspot => {
+                if (debugMode) {
+                    hotspot.style.border = '2px solid rgba(255, 0, 0, 0.5)';
+                    // Make hotspots draggable in debug mode
+                    enableDragging(hotspot);
+                } else {
+                    hotspot.style.border = 'none';
+                    // Disable dragging when not in debug mode
+                    disableDragging(hotspot);
+                }
+            });
+            
+            updateDebugInfo();
+        });
+        
+        // Save positions
+        savePositionsBtn.addEventListener('click', () => {
+            const hotspots = document.querySelectorAll('.hotspot');
+            const container = document.querySelector('.hero-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Calculate background image dimensions
+            let bgWidth, bgHeight, offsetX, offsetY;
+            const imageAspectRatio = ORIGINAL_IMAGE_WIDTH / ORIGINAL_IMAGE_HEIGHT;
+            const containerAspectRatio = containerRect.width / containerRect.height;
+            
+            // Determine how the image is displayed with background-size: cover
+            if (containerAspectRatio > imageAspectRatio) {
+                // Container is wider than image - image width is scaled to container width
+                bgWidth = containerRect.width;
+                bgHeight = bgWidth / imageAspectRatio;
+                offsetX = 0;
+                offsetY = (containerRect.height - bgHeight) / 2;
+            } else {
+                // Container is taller than image - image height is scaled to container height
+                bgHeight = containerRect.height;
+                bgWidth = bgHeight * imageAspectRatio;
+                offsetX = (containerRect.width - bgWidth) / 2;
+                offsetY = 0;
+            }
+            
+            // Generate code with updated positions
+            let output = "Updated positions:\n\n";
+            
+            hotspots.forEach(hotspot => {
+                const rect = hotspot.getBoundingClientRect();
+                const hotspotCenterX = rect.left + rect.width / 2 - containerRect.left;
+                const hotspotCenterY = rect.top + rect.height / 2 - containerRect.top;
+                
+                // Convert to relative coordinates
+                const relX = (hotspotCenterX - offsetX) / bgWidth;
+                const relY = (hotspotCenterY - offsetY) / bgHeight;
+                
+                // Round to 2 decimal places
+                const roundedX = Math.round(relX * 100) / 100;
+                const roundedY = Math.round(relY * 100) / 100;
+                
+                // Update data attributes
+                hotspot.setAttribute('data-x', roundedX);
+                hotspot.setAttribute('data-y', roundedY);
+                
+                // Add to output
+                output += `${hotspot.getAttribute('data-member')}: data-x="${roundedX}" data-y="${roundedY}"\n`;
+            });
+            
+            console.log(output);
+            console.log(`Container dimensions: ${containerRect.width}x${containerRect.height}`);
+            console.log(`Background image as displayed: ${bgWidth}x${bgHeight}`);
+            console.log(`Offset: X=${offsetX}, Y=${offsetY}`);
+            alert("Positions saved! Check the console for the values.");
+        });
+        
+        // Update debug info
+        function updateDebugInfo() {
+            if (!debugMode) return;
+            
+            const container = document.querySelector('.hero-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            let info = `Container: ${Math.round(containerRect.width)}x${Math.round(containerRect.height)}<br>`;
+            
+            const hotspots = document.querySelectorAll('.hotspot');
+            hotspots.forEach(hotspot => {
+                const member = hotspot.getAttribute('data-member');
+                const x = hotspot.getAttribute('data-x');
+                const y = hotspot.getAttribute('data-y');
+                info += `${member}: x=${x}, y=${y}<br>`;
+            });
+            
+            debugInfo.innerHTML = info;
+        }
+        
+        // Enable dragging for a hotspot
+        function enableDragging(hotspot) {
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            hotspot.addEventListener('mousedown', startDrag);
+            
+            function startDrag(e) {
+                isDragging = true;
+                offsetX = e.clientX - hotspot.getBoundingClientRect().left;
+                offsetY = e.clientY - hotspot.getBoundingClientRect().top;
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                
+                // Prevent default to avoid text selection during drag
+                e.preventDefault();
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                
+                const container = document.querySelector('.hero-container');
+                const containerRect = container.getBoundingClientRect();
+                
+                const left = e.clientX - containerRect.left - offsetX;
+                const top = e.clientY - containerRect.top - offsetY;
+                
+                hotspot.style.left = `${left}px`;
+                hotspot.style.top = `${top}px`;
+                
+                updateDebugInfo();
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+            }
+            
+            // Store the event listeners for later removal
+            hotspot._dragHandlers = {
+                startDrag,
+                drag,
+                stopDrag
+            };
+        }
+        
+        // Disable dragging for a hotspot
+        function disableDragging(hotspot) {
+            if (hotspot._dragHandlers) {
+                hotspot.removeEventListener('mousedown', hotspot._dragHandlers.startDrag);
+                document.removeEventListener('mousemove', hotspot._dragHandlers.drag);
+                document.removeEventListener('mouseup', hotspot._dragHandlers.stopDrag);
+                hotspot._dragHandlers = null;
+            }
+        }
+        
+        // Debounce function to limit how often a function is called
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+        
+        // Add keyboard shortcut (press 'D' to toggle debug mode)
+        document.addEventListener('keydown', (e) => {
+            // Check if the pressed key is 'D' or 'd'
+            if (e.key === 'd' || e.key === 'D') {
+                // Toggle debug mode
+                debugMode = !debugMode;
+                debugPanel.classList.toggle('active');
+                
+                const hotspots = document.querySelectorAll('.hotspot');
+                hotspots.forEach(hotspot => {
+                    if (debugMode) {
+                        hotspot.style.border = '2px solid rgba(255, 0, 0, 0.5)';
+                        // Make hotspots draggable in debug mode
+                        enableDragging(hotspot);
+                    } else {
+                        hotspot.style.border = 'none';
+                        // Disable dragging when not in debug mode
+                        disableDragging(hotspot);
+                    }
+                });
+                
+                updateDebugInfo();
+            }
+        });
+        
+        // Adjust on resize with debounce to prevent too many calculations
+        window.addEventListener('resize', debounce(positionHotspots, 100));
+    </script>
+</body>
+</html> 

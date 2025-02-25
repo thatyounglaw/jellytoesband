@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex - Jellytoes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-dark: #0a0a0a;
+            --color-light: #f8f8f8;
+            --color-accent: #e63946;
+            --color-blue: #457b9d;
+            --color-pink: #e07a9f;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('./Assets/alex-bio.jpeg') no-repeat center center;
+            background-size: cover;
+            z-index: 1;
+            animation: zoomIn 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(10, 10, 10, 0.8) 0%, rgba(10, 10, 10, 0.4) 50%, rgba(10, 10, 10, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.5s;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.8s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.5s, bounce 2s infinite 2.5s;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--color-light);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        /* Bio Section */
+        .bio-section {
+            padding: 6rem 10%;
+            background: var(--color-dark);
+            position: relative;
+        }
+
+        .bio-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--color-dark));
+            z-index: 4;
+        }
+
+        .bio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .bio-text {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .bio-text.visible {
+            animation: fadeUp 1s forwards;
+        }
+
+        .bio-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .bio-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--color-accent);
+        }
+
+        .bio-paragraph {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .bio-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            margin: 2rem 0;
+            padding-left: 2rem;
+            border-left: 3px solid var(--color-accent);
+            opacity: 0.9;
+        }
+
+        .bio-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            color: var(--color-accent);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.3s;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            color: var(--color-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+
+        .back-link svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 2rem 10%;
+            background: rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: var(--color-light);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            color: var(--color-accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .bio-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 0 5%;
+            }
+
+            .bio-section {
+                padding: 4rem 5%;
+            }
+
+            .nav-container {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+
+        /* Animation for elements that come into view */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Navigation -->
+        <div class="nav-container">
+            <a href="index.html" class="back-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                </svg>
+                Back to Band
+            </a>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-image"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Alex</h1>
+                <p class="hero-subtitle">Guitarist & Lead Vocalist, crafting sonic landscapes with meticulous precision and raw emotion.</p>
+            </div>
+            <div class="scroll-indicator">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- Bio Section -->
+        <section class="bio-section">
+            <div class="bio-container">
+                <div class="bio-text fade-in-element">
+                    <h2 class="bio-title">The Melodic Architect</h2>
+                    <p class="bio-paragraph">Alex, the melodic genius behind Jellytoes, is a true sound technician, painting with the tones of his guitars. His approach to music is both methodical and intuitive, combining technical precision with raw emotional expression.</p>
+                    
+                    <p class="bio-paragraph">He has more guitar gear than nearly anyone on the face of the earth, and each song is carefully crafted through an intricate signal chain—starting from his vast collection of vintage and custom guitars, running through an extensive array of pedals, and shaped with relentless precision.</p>
+                    
+                    <div class="bio-quote">
+                        "Every note should have intention. Every tone should have character. Music isn't just heard—it's felt."
+                    </div>
+                    
+                    <p class="bio-paragraph">His tone is an evolving masterpiece, constantly tweaked and refined, much like a detailed rig rundown from a guitar magazine. Alex's dedication to the craft is unmatched, ensuring that every note, chord, and melody carries the weight of intention and emotion.</p>
+                    
+                    <p class="bio-paragraph">When not performing with Jellytoes, Alex can be found in his home studio, experimenting with new sounds and recording techniques. His influences range from classic rock virtuosos to modern experimental composers, creating a unique sonic palette that defines the Jellytoes sound.</p>
+                </div>
+                
+                <div class="bio-stats fade-in-element">
+                    <div class="stat-item">
+                        <div class="stat-title">Primary Instrument</div>
+                        <div class="stat-value">Fender Stratocaster (Custom)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Vocal Range</div>
+                        <div class="stat-value">Baritone with 3-octave range</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Pedal Collection</div>
+                        <div class="stat-value">47 and counting</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Songwriting Credits</div>
+                        <div class="stat-value">32 original compositions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Key Influences</div>
+                        <div class="stat-value">David Gilmour, John Frusciante, St. Vincent</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Years with Jellytoes</div>
+                        <div class="stat-value">Founding member (7 years)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.27C8.28,9.09 5.11,7.38 3,4.79C2.63,5.42 2.42,6.16 2.42,6.94C2.42,8.43 3.17,9.75 4.33,10.5C3.62,10.5 2.96,10.3 2.38,10C2.38,10 2.38,10 2.38,10.03C2.38,12.11 3.86,13.85 5.82,14.24C5.46,14.34 5.08,14.39 4.69,14.39C4.42,14.39 4.15,14.36 3.89,14.31C4.43,16 6,17.26 7.89,17.29C6.43,18.45 4.58,19.13 2.56,19.13C2.22,19.13 1.88,19.11 1.54,19.07C3.44,20.29 5.7,21 8.12,21C16,21 20.33,14.46 20.33,8.79C20.33,8.6 20.33,8.42 20.32,8.23C21.16,7.63 21.88,6.87 22.46,6Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.59,6.69C19.3,5.93 18.67,5.31 17.91,5C16.46,4.5 12,4.5 12,4.5C12,4.5 7.54,4.5 6.09,5C5.33,5.31 4.7,5.93 4.41,6.69C4,8.12 4,11.28 4,11.28C4,11.28 4,14.44 4.41,15.87C4.7,16.63 5.33,17.25 6.09,17.56C7.54,18.06 12,18.06 12,18.06C12,18.06 16.46,18.06 17.91,17.56C18.67,17.25 19.3,16.63 19.59,15.87C20,14.44 20,11.28 20,11.28C20,11.28 20,8.12 19.59,6.69M10.5,14.25V8.31L14.94,11.28L10.5,14.25Z" />
+                    </svg>
+                </a>
+            </div>
+            <p>&copy; 2023 Jellytoes. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in-element');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Smooth scroll for the scroll indicator
+            document.querySelector('.scroll-indicator').addEventListener('click', function() {
+                document.querySelector('.bio-section').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
